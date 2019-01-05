@@ -19,15 +19,25 @@ class App extends React.Component {
 
     state = {
 
-         tableValues :[
-    
-            ['101','Tony Stark', 'Iron Man', 'Avengers'],
-            ['102','Peter Parker', 'Spider Man', 'Avengers'],
-            ['103','Bruce Mayne', 'Bat Man', 'Justice League']
-        ]
+         tableValues :[ ]
+    }
 
-       
+    componentDidMount() {
+        this.fetchList()
+    }
 
+    fetchList() {
+
+        let self = this;
+        const request = new Request("/heroes", {
+            method: "GET",
+            headers: {"content-type":"application/json"}
+        })
+        fetch(request)
+        .then(res => res.json())
+        .then(function(data) {
+            self.setState({"tableValues":data})
+        });
     }
 
     
@@ -52,6 +62,28 @@ class App extends React.Component {
     }
 
     createRecord(name,alias,team) {
+        const self = this;
+        var body = {
+            name: name,
+            alias: alias,
+            team: team
+
+        };
+        var request = new Request('/heroes', {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        fetch(request)
+        //.then(res => res.json())
+        .then(function() {
+            self.fetchList()
+        });
+    }
+
+   /* createRecord(name,alias,team) {
         console.log(name,alias,team)
         const ID = (Math.random() * 100).toString();
         const newRecord = [ID,name,alias,team]
@@ -59,7 +91,7 @@ class App extends React.Component {
         const newTableValues = [...this.state.tableValues]
         newTableValues.push(newRecord)
         this.setState({tableValues:newTableValues})
-    }
+    }*/
 
     render() {
          return (
@@ -80,21 +112,7 @@ class App extends React.Component {
                                      /> 
                     }}/> 
 
-                    <Route exact path="/view/:id" render = {(props) => {
-                        console.log(props)
-                        const data = this.state.tableValues.find(val => val[0] === props.match.params.id)
-                        const newRecord = {
-                                        name: data[1],
-                                        alias: data[2],
-                                        team: data[3]
-                        }
-                        
-                        return <View
-                                     name={newRecord.name} 
-                                     alias={newRecord.alias}  
-                                     team={newRecord.team} />
-
-                    }}/> 
+                    <Route exact path="/view/:id" component={View}/>
                     <Redirect to="/List"/>
                 </Switch>   
              </Router>  
