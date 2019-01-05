@@ -24,6 +24,7 @@ class Row extends React.Component {
         );
 
         let actionButton ;
+        
         if (this.props.isHeader) {
         
             actionButton = (<Column isHeader = {this.props.isHeader} > Action </Column>)

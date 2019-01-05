@@ -8,6 +8,7 @@ class View extends React.Component {
                 <div>Name: {this.props.name}</div>
                 <div>Alias: {this.props.alias}</div>
                 <div>Team: {this.props.team}</div>
+               
             </section>
         )
     }
